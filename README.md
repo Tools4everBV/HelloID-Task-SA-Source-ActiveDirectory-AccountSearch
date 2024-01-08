@@ -17,7 +17,7 @@ This code snippet executes the following tasks:
 
 1. Imports the ActiveDirectory module.
 2. Define a wildcard search query `$searchQuery` based on the search parameter `$datasource.searchUser`
-3. Loop through the list of AD search OU's defined in the User-defined variable `ADusersSearchOU` and retrieve the AD users usging the `Get-ADUser` cmdlet.
+3. Loop through the list of AD search OU's defined in the User-defined variable `ADusersSearchOU` and retrieve the AD users using the `Get-ADUser` cmdlet.
 
 > The filter property **-filter** accepts different values [See the Microsoft Docs page](https://learn.microsoft.com/en-us/powershell/module/activedirectory/get-aduser?view=windowsserver2022-ps)
 
