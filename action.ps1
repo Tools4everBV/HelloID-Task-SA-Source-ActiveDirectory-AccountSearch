@@ -12,8 +12,21 @@ try {
         Write-Information "SearchBase: $searchOUs"
          
         $ous = $searchOUs | ConvertFrom-Json
+        $filter = {
+            Name -like $searchQuery -or
+            DisplayName -like $searchQuery -or
+            userPrincipalName -like $searchQuery -or
+            mail -like $searchQuery
+        }
+
         $users = foreach($item in $ous) {
-            Get-ADUser -Filter {Name -like $searchQuery -or DisplayName -like $searchQuery -or userPrincipalName -like $searchQuery -or mail -like $searchQuery} -SearchBase $item.ou -properties SamAccountName, displayName, UserPrincipalName, Description, company, Department, Title
+            $params = @{
+                Filter      = $filter;
+                SearchBase  = $item.ou;
+                Properties  = 'SamAccountName', 'displayName', 'UserPrincipalName', 'Description', 'company', 'Department', 'Title';
+            }
+
+            Get-ADUser @params
         }
          
         $users = $users | Sort-Object -Property DisplayName
@@ -22,7 +35,16 @@ try {
          
         if($resultCount -gt 0){
             foreach($user in $users){
-                $returnObject = @{SamAccountName=$user.SamAccountName; displayName=$user.displayName; UserPrincipalName=$user.UserPrincipalName; Description=$user.Description; Company=$user.company; Department=$user.Department; Title=$user.Title;}
+                $returnObject = @{
+                    SamAccountName      = $user.SamAccountName;
+                    displayName         = $user.displayName;
+                    UserPrincipalName   = $user.UserPrincipalName;
+                    Description         = $user.Description;
+                    Company             = $user.company;
+                    Department          = $user.Department;
+                    Title               = $user.Title;
+                }
+                
                 Write-Output $returnObject
             }
         }
